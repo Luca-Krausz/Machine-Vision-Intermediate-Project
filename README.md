@@ -1,4 +1,4 @@
-# Machine-Vision-Intermediate-Project
+# Machine Vision Intermediate Project
 Computer vision pipeline for automated morphological classification of eucalyptus and pine seedlings, developed as part of the Visão de Máquinas course at Insper.
 
 The system extracts key quality attributes from seedling images captured against a blue background, replacing manual inspection with an objective, scalable, and traceable routine.
