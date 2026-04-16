@@ -23,7 +23,7 @@ def remove_bg(img):
 
 def masks(img):
     k  = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
-    kw = cv2.getStructuringElement(cv2.MORPH_RECT, (95, 5))
+    kw = cv2.getStructuringElement(cv2.MORPH_RECT, (100, 5))
 
     # Background → foreground silhouette
     img_no_bg = remove_bg(img)
@@ -41,6 +41,7 @@ def masks(img):
     idx = 1 + int(np.argmax(bottoms))
     pot = np.where(lbl == idx, 255, 0).astype(np.uint8)
 
+
     # Plant = foreground above the pot's top row
     rows = np.where(pot.any(axis=1))[0]
     soil_row = int(rows[0]) if len(rows) else fg_mask.shape[0]
@@ -55,14 +56,14 @@ pot_eucalyptus, plant_eucalyptus = masks(imgs_eucalyptus[0])
 pot_pines, plant_pines = masks(imgs_pines[0])
 
 
-plt.figure(figsize=(15, 5))
-plt.subplot(1, 3, 1); plt.imshow(pot_eucalyptus,   cmap='gray'); plt.title('pot')
-plt.subplot(1, 3, 2); plt.imshow(plant_eucalyptus, cmap='gray'); plt.title('plant')
-plt.subplot(1, 3, 3); plt.imshow(remove_bg(imgs_eucalyptus[0]), cmap='gray'); plt.title('plant')
+# plt.figure(figsize=(15, 5))
+# plt.subplot(1, 3, 1); plt.imshow(pot_eucalyptus,   cmap='gray'); plt.title('pot')
+# plt.subplot(1, 3, 2); plt.imshow(plant_eucalyptus, cmap='gray'); plt.title('plant')
+# plt.subplot(1, 3, 3); plt.imshow(remove_bg(imgs_eucalyptus[0]), cmap='gray'); plt.title('plant')
 
-plt.figure(figsize=(15, 5))
-plt.subplot(1, 3, 1); plt.imshow(pot_pines,   cmap='gray'); plt.title('pot')
-plt.subplot(1, 3, 2); plt.imshow(plant_pines, cmap='gray'); plt.title('plant')
-plt.subplot(1, 3, 3); plt.imshow(remove_bg(imgs_pines[0]), cmap='gray'); plt.title('plant')
+# plt.figure(figsize=(15, 5))
+# plt.subplot(1, 3, 1); plt.imshow(pot_pines,   cmap='gray'); plt.title('pot')
+# plt.subplot(1, 3, 2); plt.imshow(plant_pines, cmap='gray'); plt.title('plant')
+# plt.subplot(1, 3, 3); plt.imshow(remove_bg(imgs_pines[0]), cmap='gray'); plt.title('plant')
 
-plt.show()
+# plt.show()
