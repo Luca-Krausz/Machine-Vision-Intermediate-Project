@@ -4,11 +4,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from library.selectBlob import *
 
-paths = [f"Machine-Vision-Intermediate-Project/_Eucalipto_Escolhidos1/Eucalipto{i}.jpg"
+paths_eucalyptus = [f"_Eucalipto_Escolhidos1/Eucalipto{i}.jpg"
          for i in range(1, 6)]
-imgs = [cv2.cvtColor(cv2.imread(p), cv2.COLOR_BGR2RGB) for p in paths]
+imgs_eucalyptus = [cv2.cvtColor(cv2.imread(p), cv2.COLOR_BGR2RGB) for p in paths_eucalyptus]
 
-for i, img in enumerate(imgs):
+paths_pines = [f"_Pinheiro_Escolhidos1/Pinheiro{i}.jpg"
+         for i in range(1, 4)]
+imgs_pines = [cv2.cvtColor(cv2.imread(p), cv2.COLOR_BGR2RGB) for p in paths_pines]
+
+for i, img in enumerate(imgs_eucalyptus):
     if img is None:
         print(f"Error: Image {i+1} not found.")
 
@@ -18,8 +22,8 @@ def remove_bg(img):
     return img_no_bg
 
 def masks(img):
-    k  = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
-    kw = cv2.getStructuringElement(cv2.MORPH_RECT, (150, 5))
+    k  = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
+    kw = cv2.getStructuringElement(cv2.MORPH_RECT, (95, 5))
 
     # Background → foreground silhouette
     img_no_bg = remove_bg(img)
@@ -43,13 +47,22 @@ def masks(img):
     plant = fg_mask.copy()
     plant[soil_row:, :] = 0
 
-    return plant, pot
+    return  pot, plant
 
 
-plant, pot = masks(imgs[0])
+pot_eucalyptus, plant_eucalyptus = masks(imgs_eucalyptus[0])
+
+pot_pines, plant_pines = masks(imgs_pines[0])
+
 
 plt.figure(figsize=(15, 5))
-plt.subplot(1, 3, 1); plt.imshow(pot,   cmap='gray'); plt.title('pot')
-plt.subplot(1, 3, 2); plt.imshow(plant, cmap='gray'); plt.title('plant')
-plt.subplot(1, 3, 3); plt.imshow(remove_bg(imgs[0]), cmap='gray'); plt.title('plant')
+plt.subplot(1, 3, 1); plt.imshow(pot_eucalyptus,   cmap='gray'); plt.title('pot')
+plt.subplot(1, 3, 2); plt.imshow(plant_eucalyptus, cmap='gray'); plt.title('plant')
+plt.subplot(1, 3, 3); plt.imshow(remove_bg(imgs_eucalyptus[0]), cmap='gray'); plt.title('plant')
+
+plt.figure(figsize=(15, 5))
+plt.subplot(1, 3, 1); plt.imshow(pot_pines,   cmap='gray'); plt.title('pot')
+plt.subplot(1, 3, 2); plt.imshow(plant_pines, cmap='gray'); plt.title('plant')
+plt.subplot(1, 3, 3); plt.imshow(remove_bg(imgs_pines[0]), cmap='gray'); plt.title('plant')
+
 plt.show()
