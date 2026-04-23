@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from library.selectBlob import *
+from skimage.morphology import skeletonize as sk_skeletonize
 
 paths_eucalyptus = [f"_Eucalipto_Escolhidos1/Eucalipto{i}.jpg"
          for i in range(1, 6)]
@@ -11,6 +12,10 @@ imgs_eucalyptus = [cv2.cvtColor(cv2.imread(p), cv2.COLOR_BGR2RGB) for p in paths
 paths_pines = [f"_Pinheiro_Escolhidos1/Pinheiro{i}.jpg"
          for i in range(1, 4)]
 imgs_pines = [cv2.cvtColor(cv2.imread(p), cv2.COLOR_BGR2RGB) for p in paths_pines]
+
+for i, img in enumerate(imgs_pines) or enumerate(imgs_eucalyptus):
+    if img is None:
+        print(f"Error: Image {i+1} not found.")
 
 for i, img in enumerate(imgs_eucalyptus):
     if img is None:
@@ -23,7 +28,7 @@ def remove_bg(img):
 
 def masks(img):
     k  = cv2.getStructuringElement(cv2.MORPH_RECT, (7, 7))
-    kw = cv2.getStructuringElement(cv2.MORPH_RECT, (95, 5))
+    kw = cv2.getStructuringElement(cv2.MORPH_RECT, (100, 5))
 
     # Background → foreground silhouette
     img_no_bg = remove_bg(img)
@@ -49,13 +54,23 @@ def masks(img):
 
     return  pot, plant
 
+def skeletonize(mask):
+    skel = sk_skeletonize(mask > 0).astype(np.uint8) * 255
+
+    # Keep only the largest connected component of the skeleton
+    n, lbl, stats, _ = cv2.connectedComponentsWithStats(skel, 8)
+    if n <= 1:
+        return skel
+    idx = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
+    return np.where(lbl == idx, 255, 0).astype(np.uint8)
+
 
 pot_eucalyptus, plant_eucalyptus = masks(imgs_eucalyptus[0])
 
 pot_pines, plant_pines = masks(imgs_pines[0])
 
 
-plt.figure(figsize=(15, 5))
+'''plt.figure(figsize=(15, 5))
 plt.subplot(1, 3, 1); plt.imshow(pot_eucalyptus,   cmap='gray'); plt.title('pot')
 plt.subplot(1, 3, 2); plt.imshow(plant_eucalyptus, cmap='gray'); plt.title('plant')
 plt.subplot(1, 3, 3); plt.imshow(remove_bg(imgs_eucalyptus[0]), cmap='gray'); plt.title('plant')
@@ -65,4 +80,4 @@ plt.subplot(1, 3, 1); plt.imshow(pot_pines,   cmap='gray'); plt.title('pot')
 plt.subplot(1, 3, 2); plt.imshow(plant_pines, cmap='gray'); plt.title('plant')
 plt.subplot(1, 3, 3); plt.imshow(remove_bg(imgs_pines[0]), cmap='gray'); plt.title('plant')
 
-plt.show()
+plt.show()'''
