@@ -1,21 +1,19 @@
-<<<<<<< HEAD
-=======
-# Basico
->>>>>>> e6a1cd451a4c88acfb39c1552d085f45270f364d
 import cv2
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from library.selectBlob import *
-<<<<<<< HEAD
-from seedling_inspector import masks
+from main import masks
 
+# Eucalyptus
 paths = [f"_Eucalipto_Escolhidos1/Eucalipto{i}.jpg" for i in range(1, 6)]
 imgs_eu = [cv2.cvtColor(cv2.imread(p), cv2.COLOR_BGR2RGB) for p in paths]
 plants_eu = [masks(img)[1] for img in imgs_eu]
 
-plt.imshow(plants_eu[0], cmap='gray')
-plt.show()
+# Pines
+paths = [f"_Pinheiro_Escolhidos1/Pinheiro{i}.jpg" for i in range(1, 4)]
+imgs_pines = [cv2.cvtColor(cv2.imread(p), cv2.COLOR_BGR2RGB) for p in paths]
+plants_pines = [masks(img)[1] for img in imgs_pines]
 
 def collar_diameter(plant_mask):
     white_rows = np.where(np.any(plant_mask == 255, axis=1))[0]
@@ -54,6 +52,8 @@ def collar_diameter(plant_mask):
 
     return x_max - x_min, (y_collar, x_min, x_max)
 
+# Seeing the results for eucalyptus
+
 plt.figure(figsize=(5 * len(plants_eu), 10))
 for i, (img, plant) in enumerate(zip(imgs_eu, plants_eu), start=1):
     diam, (y, x1, x2) = collar_diameter(plant)
@@ -74,50 +74,26 @@ for i, (img, plant) in enumerate(zip(imgs_eu, plants_eu), start=1):
 
 plt.tight_layout()
 plt.show()
-=======
-from seedling_inspector import remove_bg, masks
 
-paths_eucalyptus = [f"_Eucalipto_Escolhidos1/Eucalipto{i}.jpg"
-         for i in range(1, 6)]
-imgs_eucalyptus = [cv2.cvtColor(cv2.imread(p), cv2.COLOR_BGR2RGB) for p in paths_eucalyptus]
+# Seeing the results for pines
 
-paths_pines = [f"_Pinheiro_Escolhidos1/Pinheiro{i}.jpg"
-         for i in range(1, 4)]
-imgs_pines = [cv2.cvtColor(cv2.imread(p), cv2.COLOR_BGR2RGB) for p in paths_pines]
+plt.figure(figsize=(5 * len(plants_pines), 10))
+for i, (img, plant) in enumerate(zip(imgs_pines, plants_pines), start=1):
+    diam, (y, x1, x2) = collar_diameter(plant)
 
+    vis = cv2.cvtColor(plant, cv2.COLOR_GRAY2RGB)
+    cv2.line(vis, (x1, y), (x2, y), (0, 255, 0), 3)
 
-plant_eucalyptus = masks(imgs_eucalyptus[0])[1]
+    
+    plt.subplot(2, len(plants_pines), i)
+    plt.imshow(vis)
+    plt.title(f"Pine {i} - collar = {diam} px")
+    plt.axis("off")
 
-ys, xs = np.where(plant_eucalyptus == 255)
-
-y_max = np.max(ys)
-
-x_base = xs[ys == y_max]
-print(x_base)
-
-diameter = np.max(x_base) - np.min(x_base)
-
-plt.figure()
-plt.imshow(plant_eucalyptus, cmap ='gray')
+    plt.subplot(2, len(plants_pines), len(plants_pines) + i)
+    plt.imshow(img)
+    plt.title(f"original {i}")
+    plt.axis("off")
+    
+plt.tight_layout()
 plt.show()
-
-
-
-# diameter = np.max(x_base) - np.min(x_base)
-
-# print(diameter)
-
-# length = y_max - y_min
-
-
-
-# print('Comprimento do caule da muda de eucalipto')
-# for i in range(len(imgs_eucalyptus)):
-#     print('Imagem', i + 1, ':',
-#           stem_length(imgs_eucalyptus[i]), 'pixels')
-
-# print('Comprimento do caule da muda de pinheiro')
-# for j in range(len(imgs_pines)):
-#     print('Imagem', j + 1, ':',
-#           stem_length(imgs_pines[j]), 'pixels')
->>>>>>> e6a1cd451a4c88acfb39c1552d085f45270f364d
