@@ -52,6 +52,16 @@ def collar_diameter(plant_mask):
 
     return x_max - x_min, (y_collar, x_min, x_max)
 
+print('Diâmetro do colo - Eucalipto')
+for i, plant in enumerate(plants_eu, start=1):
+    diam, _ = collar_diameter(plant)
+    print(f'Imagem {i}: {diam} px')
+
+print('\nDiâmetro do colo - Pinheiro')
+for i, plant in enumerate(plants_pines, start=1):
+    diam, _ = collar_diameter(plant)
+    print(f'Imagem {i}: {diam} px')
+
 # Seeing the results for eucalyptus
 
 plt.figure(figsize=(5 * len(plants_eu), 10))

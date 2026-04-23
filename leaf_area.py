@@ -16,23 +16,24 @@ imgs_pines = [cv2.cvtColor(cv2.imread(p), cv2.COLOR_BGR2RGB) for p in paths_pine
 
 
 
-def leaf_area(img):
-    plant = masks(img)[0]
+def leaf_area_eucalyptus(img):
+    plant = masks(img)[1]
 
-    kw = cv2.getStructuringElement(cv2.MORPH_RECT, (12, 12))
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (12, 12))
 
-    img_no_bg = remove_bg(img)
-
-    img_segmentada = cv2.morphologyEx(plant, cv2.MORPH_OPEN,  kw)
+    img_segmentada = cv2.morphologyEx(plant, cv2.MORPH_OPEN,  kernel)
 
     area = np.sum(img_segmentada == 255)
     
     return area
 
 
-# print('Área das folhas de eucalipto')
-# for i in range(len(imgs_eucalyptus)):
-#     print('Imagem', i + 1, ':', print(leaf_area(imgs_eucalyptus[i])))
+print('Área das folhas de eucalipto')
+
+for i in range(len(imgs_eucalyptus)):
+    area = leaf_area_eucalyptus(imgs_eucalyptus[i])
+    print('Imagem', i + 1, ':', area)
+
     
     
 # Leaf area for pines

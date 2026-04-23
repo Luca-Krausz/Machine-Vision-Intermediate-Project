@@ -1,10 +1,11 @@
-# Basico
+# Comprimento básico
 import cv2
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from library.selectBlob import *
 from main import remove_bg, masks
+from skimage.morphology import skeletonize
 
 paths_eucalyptus = [f"_Eucalipto_Escolhidos1/Eucalipto{i}.jpg"
          for i in range(1, 6)]
@@ -35,3 +36,4 @@ print('Comprimento do caule da muda de pinheiro')
 for j in range(len(imgs_pines)):
     print('Imagem', j + 1, ':',
           stem_length(imgs_pines[j]), 'pixels')
+
